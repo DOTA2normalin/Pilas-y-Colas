@@ -1,3 +1,6 @@
+// https://blog.martincruz.me/2012/10/Pilas-en-c.html
+// https://www.youtube.com/watch?v=is0WqRwmLfA
+
 // https://www.youtube.com/watch?v=YrUjHXxKz2g
 
 // http://www.conclase.net/c/edd/?cap=002d
@@ -23,7 +26,9 @@ class Pila
 {
     Nodo<T> *head;
 public:
-    Pila():head(NULL){}
+    Pila(){
+        head=NULL;
+    }
     ~Pila()
     {
         while(head)
@@ -32,29 +37,65 @@ public:
         }
     }
 
-    void Push(T v)
-    {
-        Nodo<T> *nuevo= new Pila();
-        /* Ahora, el comienzo de nuestra pila es en nuevo nodo */
-
-        nuevo->dato=v;
-        head = nuevo;
-    }
+    void Push(T);
     T Pop() 
     {
-        Nodo<T> *nodo;
-        int v;
+        Nodo<T> *temp=head;
+        Nodo<T> *temp2;
+        T v;
         if(!head)
             return 0;
-        nodo=head;
-        head=nodo->next;
-        v=nodo->dato;
-        delete nodo;
+        if(temp!=NULL){
+            temp2=temp;
+        }
+        v=temp2->dato;
+        head=head->next;
+        delete temp2;
         return v;
+    }
+    void mostrar()
+    {
+        Nodo<T> *temp = head;
+    
+        while(temp!=NULL)
+        {   
+            cout<<temp->dato<<"->";
+            temp=temp->next;
+        }
+        cout<<"NULL";
     }
 };
 
+template<typename T>
+void Pila<T>::Push(T v)
+{
+    Nodo<T> *nuevo= new Nodo<T>(v);
+    /* Ahora, el comienzo de nuestra Pila es en nuevo nodo */
+    nuevo->dato=v;
+    if(head==NULL)
+    {
+        nuevo->next=NULL;
+    }
+    else{
+        Nodo<T> *temp;
+        temp=head;
+        nuevo->next=temp;
+    
+    }
+
+    head = nuevo;
+}
 int main()
 {
+    Pila<int>  pila;
+    pila.Push(8);
+    pila.Push(7);
+    pila.Push(5);
+    pila.Push(3);
+    pila.Push(1);
+    pila.mostrar();
+    pila.Pop();
+    cout<<endl;
+    pila.mostrar();
     return 0;
 }
