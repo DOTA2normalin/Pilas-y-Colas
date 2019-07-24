@@ -1,101 +1,108 @@
-// https://blog.martincruz.me/2012/10/Pilas-en-c.html
-// https://www.youtube.com/watch?v=is0WqRwmLfA
-
-// https://www.youtube.com/watch?v=YrUjHXxKz2g
-
-// http://www.conclase.net/c/edd/?cap=002d
-
 #include <iostream>
 using namespace std;
 
-template<typename T>
-class Nodo{
-public:
-    T dato;
-    Nodo<T> *next;
-public:
-    Nodo<T>(T n)
-    {
-        dato=n;
-        next=NULL;
-    }
-};
+
 
 template <typename T>
-class Pila
-{
-    Nodo<T> *head;
-public:
-    Pila(){
-        head=NULL;
-    }
-    ~Pila()
-    {
-        while(head)
-        {
-            Pop();
-        }
-    }
-
-    void Push(T);
-    T Pop() 
-    {
-        Nodo<T> *temp=head;
-        Nodo<T> *temp2;
-        T v;
-        if(!head)
-            return 0;
-        if(temp!=NULL){
-            temp2=temp;
-        }
-        v=temp2->dato;
-        head=head->next;
-        delete temp2;
-        return v;
-    }
-    void mostrar()
-    {
-        Nodo<T> *temp = head;
-    
-        while(temp!=NULL)
-        {   
-            cout<<temp->dato<<"->";
-            temp=temp->next;
-        }
-        cout<<"NULL";
-    }
+class Nodo{
+    T data;
+    Nodo<T> *next;
+    template<class U>
+    friend class Cola;
 };
 
 template<typename T>
-void Pila<T>::Push(T v)
+class Cola{
+    Nodo<T> *raiz;
+    Nodo<T> *fondo;
+public:
+    Cola();
+    ~Cola();
+    void insertar(T x);
+    int extraer();
+    void imprimir();
+};
+template<typename T>
+Cola<T>::Cola(){
+    raiz=NULL;
+    fondo=NULL;
+}
+template<typename T>
+Cola<T>::~Cola()
 {
-    Nodo<T> *nuevo= new Nodo<T>(v);
-    /* Ahora, el comienzo de nuestra Pila es en nuevo nodo */
-    nuevo->dato=v;
-    if(head==NULL)
+    Nodo<T> *rec=raiz;
+    Nodo<T> *bor;
+    while(raiz!=NULL)
     {
-        nuevo->next=NULL;
+        bor=rec;
+        rec=rec->next;
+        delete bor;
+    }
+}
+
+template<typename T>
+void Cola<T>::insertar(T x)
+{
+    Nodo<T> *nuevo;
+    nuevo=new Nodo<T>();
+    nuevo->data=x;
+    nuevo->next=NULL;
+    if(raiz==NULL)
+    {
+        raiz=nuevo;
+        fondo=nuevo;
     }
     else{
-        Nodo<T> *temp;
-        temp=head;
-        nuevo->next=temp;
-    
+        fondo->next=nuevo;
+        fondo=nuevo;
     }
+}
 
-    head = nuevo;
+template<typename T>
+int Cola<T>::extraer()
+{
+    if(raiz!=NULL)
+    {
+        T informacion=raiz->data;
+        Nodo<T> *bor=raiz;
+        if(raiz==fondo)
+        {
+            raiz=NULL;
+            fondo=NULL;
+        }
+        else
+        {
+            raiz=raiz->next;
+        }
+        delete bor;
+        return informacion;
+    }
+    else{
+        return -1;
+    }
+}
+template<typename T>
+void Cola<T>::imprimir()
+{
+    Nodo<T> *rec=raiz;
+    while(rec!=NULL)
+    {
+        cout<<rec->data<<"->";
+        rec=rec->next;
+    }
+    cout<<"NULL";
 }
 int main()
 {
-    Pila<int>  pila;
-    pila.Push(8);
-    pila.Push(7);
-    pila.Push(5);
-    pila.Push(3);
-    pila.Push(1);
-    pila.mostrar();
-    pila.Pop();
-    cout<<endl;
-    pila.mostrar();
+    Cola<int> cola;
+    cola.insertar(8);
+    cola.insertar(6);
+    cola.insertar(5);
+    cola.insertar(1);
+    cola.insertar(-9);
+    cola.insertar(7);
+    cola.imprimir();
+    cola.extraer();
+    cola.imprimir();
     return 0;
 }
