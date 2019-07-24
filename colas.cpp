@@ -1,83 +1,108 @@
-// https://blog.martincruz.me/2012/10/colas-en-c.html
-// https://www.youtube.com/watch?v=is0WqRwmLfA
-
 #include <iostream>
 using namespace std;
 
-template<typename T>
+
+
+template <typename T>
 class Nodo{
-public:
-    T dato;
+    T data;
     Nodo<T> *next;
-public:
-    Nodo<T>(T n)
-    {
-        dato=n;
-        next=NULL;
-    }
+    template<class U>
+    friend class Cola;
 };
+
 template<typename T>
 class Cola{
-public:   
-    Nodo<T> *fin;
-    Nodo<T> *frente;
+    Nodo<T> *raiz;
+    Nodo<T> *fondo;
 public:
-    Cola(){
-        fin=NULL;
-        frente=NULL;
-    }
-    ~Cola()
-    {
-        while(frente)
-        {
-            eliminar();
-        }
-    }
-    bool cola_vacia(Nodo<T> *frente)
-    {
-
-        if(frente==NULL)
-            return true;
-        return false;
-    }
-    void insertarCola(Nodo<T> *&,Nodo<T> *&,T);
-    void eliminar(Nodo<T> *&,Nodo<T> *&,T);
+    Cola();
+    ~Cola();
+    void insertar(T x);
+    int extraer();
+    void imprimir();
 };
-
 template<typename T>
-void Cola<T>::insertarCola(Nodo<T> *&frente,Nodo<T> *&fin,T n)
+Cola<T>::Cola(){
+    raiz=NULL;
+    fondo=NULL;
+}
+template<typename T>
+Cola<T>::~Cola()
 {
-        Nodo<T> *new_nodo=new Cola();
-        new_nodo->dato=n;
-        new_nodo->next=NULL;
-        frente=new_nodo;
-        fin=new_nodo;
-        if(cola_vacia(frente))
-        {
-            frente=new_nodo;
-        }
-        else{
-            fin->next=new_nodo;
-        }
-        fin=new_nodo;
+    Nodo<T> *rec=raiz;
+    Nodo<T> *bor;
+    while(raiz!=NULL)
+    {
+        bor=rec;
+        rec=rec->next;
+        delete bor;
+    }
 }
 
-
 template<typename T>
-void Cola<T>::eliminar(Nodo<T> *&frente,Nodo<T> *&fin,T n)
+void Cola<T>::insertar(T x)
 {
-    n=frente->dato;
-    Nodo<T> aux;
-    if(frente==NULL){
-        frente=NULL;
-        fin=NULL;
+    Nodo<T> *nuevo;
+    nuevo=new Nodo<T>();
+    nuevo->data=x;
+    nuevo->next=NULL;
+    if(raiz==NULL)
+    {
+        raiz=nuevo;
+        fondo=nuevo;
     }
     else{
-        frente=frente->next;
+        fondo->next=nuevo;
+        fondo=nuevo;
     }
-    delete aux;
+}
+
+template<typename T>
+int Cola<T>::extraer()
+{
+    if(raiz!=NULL)
+    {
+        T informacion=raiz->data;
+        Nodo<T> *bor=raiz;
+        if(raiz==fondo)
+        {
+            raiz=NULL;
+            fondo=NULL;
+        }
+        else
+        {
+            raiz=raiz->next;
+        }
+        delete bor;
+        return informacion;
+    }
+    else{
+        return -1;
+    }
+}
+template<typename T>
+void Cola<T>::imprimir()
+{
+    Nodo<T> *rec=raiz;
+    while(rec!=NULL)
+    {
+        cout<<rec->data<<"->";
+        rec=rec->next;
+    }
+    cout<<"NULL";
 }
 int main()
 {
+    Cola<int> cola;
+    cola.insertar(8);
+    cola.insertar(6);
+    cola.insertar(5);
+    cola.insertar(1);
+    cola.insertar(-9);
+    cola.insertar(7);
+    cola.imprimir();
+    cola.extraer();
+    cola.imprimir();
     return 0;
 }
